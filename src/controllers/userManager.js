@@ -46,10 +46,10 @@ class UserManager {
         try {
             const user = this.users.find(u => u.email === email);
             if (!user) throw new Error("Usuario no encontrado");
-    
-            const passwordMatch = await isValidPassword(password, user.password);
+
+            const passwordMatch = await isValidPassword(user, password);
             if (!passwordMatch) throw new Error("Contraseña incorrecta");
-    
+
             return {
                 message: "Usuario logueado exitosamente",
                 user
