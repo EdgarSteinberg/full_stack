@@ -1,43 +1,30 @@
+import ProductService from "../dao/services/productService.js";
+const productService = new ProductService();
+
 class ProductManager {
-    static products = [];
 
     async getAllProducts() {
-        return ProductManager.products;
+        return productService.getAllproductsService();
     }
 
     async getProductById(pid) {
-        const productId = ProductManager.products.find(pr => pr.id === parseInt(pid));
-
-        if (!productId) throw new Error(`El Producto con ID: ${pid} no se encuentra`);
-
-        return productId;
+        return productService.getproductByIdService(pid);
     }
 
     async createProduct(producto) {
-        const { title, description, price, code, stock, status , category, thumbnails } = producto;
+        const { title, description, price, code, stock, status, category, thumbnails } = producto;
 
-        if (!title || !description || !price || !code || !stock|| !category || !thumbnails) {
+        if (!title || !description || !price || !code || !stock || !category || !thumbnails) {
             throw new Error(`Debes completar todos los campos`);
         }
 
         try {
-            const newId = ProductManager.products.length > 0 ? ProductManager.products[ProductManager.products.length - 1].id + 1 : 1;
+            const createProducto = await productService.createProductService({ title, description, price, code, stock, status, category, thumbnails });
 
-            const newProducto = {
-                id: newId,
-                title,
-                description,
-                price,
-                code,
-                stock,
-                status,
-                category,
-                thumbnails
-            };
-
-            ProductManager.products.push(newProducto);
-
-            return newProducto;
+            return {
+                message: "Producto creado correctamente",
+                createProducto
+            }
         } catch (error) {
             console.log(error);
             throw error;
@@ -45,16 +32,11 @@ class ProductManager {
     }
 
     async updateProducto(pid, update) {
-        const productoEnArray = ProductManager.products.find(pr => pr.id === parseInt(pid));
 
-        if (!productoEnArray) throw new Error(`El Producto con ID: ${pid} no se encuentra`);
 
         try {
-            for (const key in update) {
-                productoEnArray[key] = update[key];  
-            }
-
-            return productoEnArray;
+            const updateProduct = await productService.updateProductService(pid, update);
+            return updateProduct;
         } catch (error) {
             console.log(error);
             throw error;
@@ -62,13 +44,10 @@ class ProductManager {
     }
 
     async deleteProduct(pid) {
-       
-        const productoExistente = ProductManager.products.find(pr => pr.id === parseInt(pid));
-        if (!productoExistente) throw new Error(`El Producto con ID: ${pid} no se encuentra`);
 
         try {
-            ProductManager.products = ProductManager.products.filter(pr => pr.id !== parseInt(pid));
-            return `Producto con ID ${pid} eliminado correctamente`;
+            const deleteProduct = await productService.deleteProductService(pid);
+            return deleteProduct;
         } catch (error) {
             console.log(error);
             throw error;

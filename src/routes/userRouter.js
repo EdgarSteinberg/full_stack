@@ -26,14 +26,14 @@ router.get("/:uid", async (req, res) => {
 });
 
 router.post("/register", async (req, res) => {
-    const { first_name, last_name, email, password } = req.body;
+    const { first_name, last_name, email, password, age} = req.body;
 
-    if (!first_name || !last_name || !email || !password) {
+    if (!first_name || !last_name || !email || !password || !age) {
         return res.status(500).send({ status: "error", error: "faltan campos que completar!" });
     }
 
     try {
-        const result = await userServices.register({ first_name, last_name, email, password });
+        const result = await userServices.register({ first_name, last_name, email, password,age });
         res.status(201).send({ status: "succes", payload: result });
     } catch (error) {
         res.status(500).send({ status: "error", error: error.message });
@@ -47,7 +47,7 @@ router.post("/login", async (req, res) => {
     }
     try {
         const result = await userServices.loginUser(email, password);
-        res.status(201).send({ status: "succes", payload: result });
+        res.status(200).send({ status: "succes", payload: result });
     } catch (error) {
         res.status(500).send({ status: "error", error: error.message });
     }

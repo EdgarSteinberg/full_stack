@@ -1,61 +1,49 @@
+import UserService from "../dao/services/userService.js";
+const userService = new UserService();
+
 import { createHash, isValidPassword } from "../utils/cryptoUtil.js";
 
 class UserManager {
-    constructor() {
-        this.users = [];
-
-    }
 
     async getAllUsers() {
-        return this.users;
+        return await userService.getAllUserService();
     }
 
     async getUserById(uid) {
-        const userId = await this.users.find(u => u.id == parseInt(uid));
-        if (!userId) throw new Error(`El usuario con ID: ${uid} no se encuentra`);
-
-        return userId;
+        return await userService.getUserByIdService(uid);
     }
 
     async register(user) {
-        const { first_name, last_name, email, password } = user;
+        const { first_name, last_name, email, password, age } = user;
 
-        if (!first_name || !last_name || !email || !password) throw new Error(`Debes completar todos los campos`);
+        if (!first_name || !last_name || !age || !email || !password) throw new Error(`Debes completar todos los campos`);
 
         try {
-            const newId = this.users.length > 0 ? this.users[this.users.length - 1].id + 1 : 1;
+
             const hashedPassword = await createHash(password);
             const newUser = {
-                id: newId,
                 first_name,
                 last_name,
+                age,
                 email,
                 password: hashedPassword
             }
 
-            this.users.push(newUser);
+            const result = await userService.createUserService(newUser);
 
-            return newUser;
+            return result;
         } catch (error) {
-            console.log(error);
-            throw error;
+            throw new Error(`Error al registrar usuario: ${error.message}`);
         }
     }
 
     async loginUser(email, password) {
+        if(!email || !password)  throw new Error(`Email o Password Incorrectos!`)
         try {
-            const user = this.users.find(u => u.email === email);
-            if (!user) throw new Error("Usuario no encontrado");
-
-            const passwordMatch = await isValidPassword(user, password);
-            if (!passwordMatch) throw new Error("Contraseña incorrecta");
-
-            return {
-                message: "Usuario logueado exitosamente",
-                user
-            };
+            const result = await userService.loginUserService(email,password);
+            return result;
         } catch (error) {
-            throw new Error(error.message); // Relanzar el error para que el controlador lo maneje
+            throw new Error(`Error al iniciar sesión: ${error.message}`);
         }
     }
 
@@ -77,16 +65,14 @@ class UserManager {
     }
 
     async deleteUser(uid) {
-        const userId = this.users.find(u => u.id == parseInt(uid));
-        if (!userId) throw new Error(`El usuario con ID: ${uid} no se encuentra`);
-
         try {
-            this.users = this.users.filter(u => u.id !== parseInt(uid));
-            return `Usuario con ID ${uid} eliminado correctamente`;
-
+            const result = await userService.deleteUserService(uid)
+            return {
+                message: "Usuario eliminado correctamente",
+                result
+            }
         } catch (error) {
-            console.log(error);
-            throw error;
+            throw new Error(`Error al eliminar usuario: ${error.message}`);
         }
     }
 }
