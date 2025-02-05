@@ -1,59 +1,51 @@
-import ProductService from "../dao/services/productService.js";
-const productService = new ProductService();
+import ProductDao from "../dao/productDao.js";
+const productDao = new ProductDao();
 
 class ProductManager {
-
     async getAllProducts() {
-        return productService.getAllproductsService();
+        return await productDao.getAllProductsDao();
     }
 
     async getProductById(pid) {
-        return productService.getproductByIdService(pid);
+        return await productDao.getProductByIdDao(pid);
     }
 
-    async createProduct(producto) {
-        const { title, description, price, code, stock, status, category, thumbnails } = producto;
+    async createProduct(product) {
+        const { title, description, price, code, stock, category, thumbnails, status = true } = product;
 
         if (!title || !description || !price || !code || !stock || !category || !thumbnails) {
-            throw new Error(`Debes completar todos los campos`);
+            throw new Error("Debes completar todos los campos obligatorios.");
         }
 
         try {
-            const createProducto = await productService.createProductService({ title, description, price, code, stock, status, category, thumbnails });
+            const createdProduct = await productDao.createProductDao({ title, description, price, code, stock, category, thumbnails, status });
 
             return {
                 message: "Producto creado correctamente",
-                createProducto
-            }
+                product: createdProduct
+            };
         } catch (error) {
-            console.log(error);
-            throw error;
+            throw new Error(`Error al crear el producto: ${error.message}`);
         }
     }
 
-    async updateProducto(pid, update) {
-
-
+    async updateProduct(pid, update) {
         try {
-            const updateProduct = await productService.updateProductService(pid, update);
-            return updateProduct;
+            const updatedProduct = await productDao.updateProductDao(pid, update);
+            return updatedProduct;
         } catch (error) {
-            console.log(error);
-            throw error;
+            throw new Error(`Error al actualizar el producto: ${error.message}`);
         }
     }
 
     async deleteProduct(pid) {
-
         try {
-            const deleteProduct = await productService.deleteProductService(pid);
-            return deleteProduct;
+            const deletedProduct = await productDao.deleteProductDao(pid);
+            return deletedProduct;
         } catch (error) {
-            console.log(error);
-            throw error;
+            throw new Error(`Error al eliminar el producto: ${error.message}`);
         }
     }
 }
-
 
 export default ProductManager;

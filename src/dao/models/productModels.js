@@ -6,7 +6,7 @@ const productSchema = new mongoose.Schema({
     title: { type: String, required: true },
     description: { type: String, required: true },
     price: { type: Number, required: true },
-    code: { type: String, required: true, unique: true }, // Evita códigos duplicados
+    code: { type: String, required: true }, // Evita códigos duplicados
     stock: { type: Number, required: true },
     status: { type: Boolean, required: true, default: true }, // Default en true
     category: { type: String, required: true },

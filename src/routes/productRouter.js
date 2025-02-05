@@ -1,6 +1,8 @@
 import { Router } from 'express';
 
+import passport from 'passport';
 import ProductManager from '../controllers/productManager.js';
+import authorization from '../middlewares/authorization.js';
 const productService = new ProductManager();
 
 const router = Router();
@@ -28,7 +30,7 @@ router.get("/:pid", async (req, res) => {
 });
 
 
-router.post("/", async (req, res) => {
+router.post("/",  passport.authenticate('jwt', { session: false }), authorization(["admin", "premium"]), async (req, res, next) => {
     const { title, description, price, code, stock, status, category, thumbnails } = req.body;
     try {
         const result = await productService.createProduct({ title, description, price, code, stock, status, category, thumbnails });
@@ -44,7 +46,7 @@ router.put("/:pid", async (req, res) => {
     const  update  = req.body;
 
     try {
-        const result = await productService.updateProducto(pid, update);
+        const result = await productService.updateProduct(pid, update);
         res.status(200).send({ status: "success", payload: result });
 
     } catch (error) {
@@ -53,7 +55,7 @@ router.put("/:pid", async (req, res) => {
 })
 
 
-router.delete("/:pid", async (req, res) => {
+router.delete("/:pid", passport.authenticate('jwt', { session: false }), authorization(["admin", "premium"]), async (req, res) => {
     const { pid } = req.params;
 
     try {
@@ -65,3 +67,7 @@ router.delete("/:pid", async (req, res) => {
 });
 
 export default router;
+
+
+
+

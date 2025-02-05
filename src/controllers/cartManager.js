@@ -1,81 +1,54 @@
-import CartService from "../dao/services/cartService.js";
-const cartService = new CartService();
-//import ProductManager from "./productManager.js";
-
+import CartDao from "../dao/cartDao.js";
+const cartDao = new CartDao();
 
 class CartManager {
-
     async getAllCarts() {
-        return cartService.getAllCartService();
+        return await cartDao.getAllCartDao();
     }
 
     async getCartById(cid) {
-        return cartService.getCartByIdService(cid);
+        return await cartDao.getCartByIdDao(cid);
     }
 
     async createCart() {
         try {
-            const result = await cartService.createCartService();
-            return result;
+            return await cartDao.createCartDao();
         } catch (error) {
-            console.log(error)
-            throw error
+            throw new Error(`Error al crear el carrito: ${error.message}`);
         }
     }
 
-    async addProductoToCart(cid, pid) {
+    async addProductToCart(cid, pid) {
         try {
-            const updatedCart = await cartService.addProductToCartService(cid, pid);
-    
-            if (!updatedCart) {
-                throw new Error("No se pudo agregar el producto al carrito");
-            }
-    
-            return updatedCart;
+            return await cartDao.addProductToCartDao(cid, pid);
         } catch (error) {
-            console.error("Error al agregar producto al carrito:", error.message);
-            throw error;
+            throw new Error(`Error al agregar el producto al carrito: ${error.message}`);
         }
     }
-    
 
     async decreaseProductQuantity(cid, pid) {
-        try{
-            const updatedCart = await cartService.decrementQuantityService(cid,pid);
-            if (!updatedCart) {
-                throw new Error("No se pudo disminuir la cantidad del producto al carrito");
-            }
-    
-            return updatedCart;
-        }catch (error) {
-            console.log(error);
-            throw error;
+        try {
+            return await cartDao.decrementQuantityDao(cid, pid);
+        } catch (error) {
+            throw new Error(`Error al decrementar cantidad: ${error.message}`);
         }
     }
-
 
     async deleteProductToCart(cid, pid) {
         try {
-           const updatedCart = await cartService.deleteProductToCartService(cid,pid);
-           if(!updatedCart){
-            throw new Error("No se pudo eliminar el producto del carrito");
-           }
-
-           return updatedCart;
+            const updatedCart = await cartDao.deleteProductToCartDao(cid, pid);
+            if (!updatedCart) throw new Error("No se pudo eliminar el producto del carrito.");
+            return updatedCart;
         } catch (error) {
-            console.log(error);
-            throw error;
+            throw new Error(`Error al eliminar producto del carrito: ${error.message}`);
         }
     }
 
-
     async deleteCart(cid) {
         try {
-            const result = await cartService.deleteCartService(cid);
-            return result;
+            return await cartDao.deleteCartDao(cid);
         } catch (error) {
-            console.log(error)
-            throw error
+            throw new Error(`Error al eliminar el carrito: ${error.message}`);
         }
     }
 }

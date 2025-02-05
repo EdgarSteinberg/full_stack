@@ -42,7 +42,7 @@ router.post("/:cid/products/:pid", async (req, res) => {
     const { cid, pid } = req.params;
 
     try {
-        const result = await cartServices.addProductoToCart(cid, pid);
+        const result = await cartServices.addProductToCart(cid, pid);
         res.status(200).send({ status: "Succes", payload: result });
 
     } catch (error) {

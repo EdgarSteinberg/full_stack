@@ -1,24 +1,29 @@
-import UserService from "../dao/services/userService.js";
-const userService = new UserService();
-
 import { createHash, isValidPassword } from "../utils/cryptoUtil.js";
+import UserDto from "../dao/dto/userDto.js";
+import UserDAO from "../dao/userDao.js";
+
+const userDao = new UserDAO();
 
 class UserManager {
-
     async getAllUsers() {
-        return await userService.getAllUserService();
+        return await userDao.getAllUsersDao();
     }
 
     async getUserById(uid) {
-        return await userService.getUserByIdService(uid);
+        const user = await userDao.getUserByIdDao(uid);
+        if (!user) throw new Error("Usuario no encontrado");
+        return new UserDto(user);
     }
 
     async register(user) {
         const { first_name, last_name, email, password, age } = user;
-
-        if (!first_name || !last_name || !age || !email || !password) throw new Error(`Debes completar todos los campos`);
+        if (!first_name || !last_name || !age || !email || !password) {
+            throw new Error("Debes completar todos los campos");
+        }
 
         try {
+            const existingUser = await userDao.getUserByEmailDao(email);
+            if (existingUser) throw new Error("El email ya está registrado");
 
             const hashedPassword = await createHash(password);
             const newUser = {
@@ -27,50 +32,34 @@ class UserManager {
                 age,
                 email,
                 password: hashedPassword
-            }
+            };
 
-            const result = await userService.createUserService(newUser);
-
-            return result;
+            return await userDao.createUserDao(newUser);
         } catch (error) {
             throw new Error(`Error al registrar usuario: ${error.message}`);
         }
     }
 
     async loginUser(email, password) {
-        if(!email || !password)  throw new Error(`Email o Password Incorrectos!`)
+        if (!email || !password) throw new Error("Email o Password incorrectos!");
+
         try {
-            const result = await userService.loginUserService(email,password);
-            return result;
+            const user = await userDao.getUserByEmailDao(email);
+            if (!user) throw new Error("Usuario no encontrado");
+
+            const passwordMatch = await isValidPassword(user, password);
+            if (!passwordMatch) throw new Error("Contraseña incorrecta");
+
+            return { message: "Inicio de sesión exitoso", user };
         } catch (error) {
             throw new Error(`Error al iniciar sesión: ${error.message}`);
         }
     }
 
-    async updateUser(uid, update) {
-        const userId = this.users.find(u => u.id == parseInt(uid));
-        if (!userId) throw new Error(`El usuario con ID: ${uid} no se encuentra`);
-
-        try {
-            for (const key in update) {
-                userId[key] = update[key];
-            }
-
-            return userId;
-
-        } catch (error) {
-            console.log(error);
-            throw error;
-        }
-    }
-
     async deleteUser(uid) {
         try {
-            const result = await userService.deleteUserService(uid)
-            return {
-                message: "Usuario eliminado correctamente",
-                result
-            }
+            const result = await userDao.deleteUserDao(uid);
+            return { message: "Usuario eliminado correctamente", result };
         } catch (error) {
             throw new Error(`Error al eliminar usuario: ${error.message}`);
         }

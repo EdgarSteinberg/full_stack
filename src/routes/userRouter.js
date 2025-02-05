@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import jwt from 'jsonwebtoken';
 
 import UserManager from '../controllers/userManager.js';
 const userServices = new UserManager();
@@ -26,15 +27,16 @@ router.get("/:uid", async (req, res) => {
 });
 
 router.post("/register", async (req, res) => {
-    const { first_name, last_name, email, password, age} = req.body;
+    const { first_name, last_name, email, password, age } = req.body;
 
     if (!first_name || !last_name || !email || !password || !age) {
         return res.status(500).send({ status: "error", error: "faltan campos que completar!" });
     }
 
     try {
-        const result = await userServices.register({ first_name, last_name, email, password,age });
-        res.status(201).send({ status: "succes", payload: result });
+        const result = await userServices.register({ first_name, last_name, email, password, age });
+      // res.redirect("/login");  // Aquí rediriges al usuario a la página de login después del registro exitoso
+        res.status(201).send({ status: "success", payload: result });
     } catch (error) {
         res.status(500).send({ status: "error", error: error.message });
     }
@@ -47,7 +49,11 @@ router.post("/login", async (req, res) => {
     }
     try {
         const result = await userServices.loginUser(email, password);
-        res.status(200).send({ status: "succes", payload: result });
+        const user = result.user;
+        console.log("User ruta", user);
+        const token = jwt.sign({ id: user._id, email: user.email, role: 'user' }, 'coderSecret', { expiresIn: '24h' });
+        console.log("token ruta", token)
+        res.cookie('coderCookieToken', token, { maxAge: 60 * 60 * 1000 }).send({ status: 'success', message: 'Logged in!' });
     } catch (error) {
         res.status(500).send({ status: "error", error: error.message });
     }
