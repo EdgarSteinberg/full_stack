@@ -9,6 +9,7 @@ import cors from 'cors';
 import __dirname from './utils/constants.js';
 
 import productRouter from './routes/productRouter.js';
+import categoriesRouter from './routes/categoriesRouter.js'
 import cartRouter from './routes/cartRouter.js';
 import userRouter from './routes/userRouter.js';
 import ticketRouter from './routes/ticketRouter.js';
@@ -38,11 +39,14 @@ if (cluster.isPrimary) {
     app.use(express.urlencoded({ extended: true }));
     app.use(express.static(`${__dirname}/../../frontend`)); // Sirve archivos HTML
     app.use(express.static(`${__dirname}/../../public`));  // Sirve otros archivos estáticos (CSS, JS, imágenes, etc.
+    app.use('/products', express.static(`${__dirname}/../../public/products`));
+
     app.use(cookieParser());
 
     app.use(cors({
-        origin: ['http://localhost:5500', 'http://127.0.0.1:5500'],
+        origin: ['http://localhost:5500', 'http://127.0.0.1:5500', 'http://localhost:5173'],
         methods: ['GET', 'POST', 'PUT', 'DELETE'],
+        allowedHeaders: ['Authorization', 'Content-Type'],
         credentials: true // Permitir cookies si es necesario
     }));
 
@@ -55,6 +59,7 @@ if (cluster.isPrimary) {
 
     //Rutas
     app.use("/api/products", productRouter);
+    app.use("/api/categories", categoriesRouter)
     app.use("/api/carts", cartRouter);
     app.use("/api/users", userRouter);
     app.use("/api/tickets", ticketRouter);

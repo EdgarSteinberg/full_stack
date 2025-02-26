@@ -9,8 +9,10 @@ const productSchema = new mongoose.Schema({
     code: { type: String, required: true }, // Evita códigos duplicados
     stock: { type: Number, required: true },
     status: { type: Boolean, required: true, default: true }, // Default en true
-    category: { type: String, required: true },
-    thumbnails: { type: [String], default: [] } // ✅ Corregido: Array de strings
+    category: { type: mongoose.Schema.Types.ObjectId, ref:"urban_category", required: true },
+    category_product: { type: String, required: true }, // Nombre de la categoría
+    thumbnails: { type: [String], default: [] }, // ✅ Corregido: Array de strings
+    owner: { type: String, default: "admin" }
 });
 
 const productModel = mongoose.model(productCollection, productSchema);

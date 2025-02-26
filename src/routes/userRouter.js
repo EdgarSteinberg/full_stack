@@ -35,8 +35,8 @@ router.post("/register", async (req, res) => {
 
     try {
         const result = await userServices.register({ first_name, last_name, email, password, age });
-      // res.redirect("/login");  // Aquí rediriges al usuario a la página de login después del registro exitoso
-        res.status(201).send({ status: "success", payload: result });
+        res.redirect('http://localhost:5173/login')
+       
     } catch (error) {
         res.status(500).send({ status: "error", error: error.message });
     }
@@ -51,13 +51,22 @@ router.post("/login", async (req, res) => {
         const result = await userServices.loginUser(email, password);
         const user = result.user;
         console.log("User ruta", user);
-        const token = jwt.sign({ id: user._id, email: user.email, role: 'user' }, 'coderSecret', { expiresIn: '24h' });
+        
+        const token = jwt.sign({ id: user._id, email: user.email, role: user.role }, 'coderSecret', { expiresIn: '24h' });
         console.log("token ruta", token)
-        res.cookie('coderCookieToken', token, { maxAge: 60 * 60 * 1000 }).send({ status: 'success', message: 'Logged in!' });
+       
+        res.cookie('coderCookieToken', token, { maxAge: 60 * 60 * 1000 })
+        res.redirect('http://localhost:5173/productos')
     } catch (error) {
         res.status(500).send({ status: "error", error: error.message });
     }
 })
+
+router.post('/logout', (req, res) => {
+    res.clearCookie('coderCookieToken', { httpOnly: true });
+    res.status(200).send({ message: 'Logout exitoso' });
+});
+
 
 router.put("/:uid", async (req, res) => {
     const { uid } = req.params;

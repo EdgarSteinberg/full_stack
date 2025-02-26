@@ -10,15 +10,23 @@ class ProductManager {
         return await productDao.getProductByIdDao(pid);
     }
 
-    async createProduct(product) {
-        const { title, description, price, code, stock, category, thumbnails, status = true } = product;
+    async getAllCategoryProduct(){
+        return await productDao.getALLCategoryProductDao();
+    }
+ 
+    async getCategoryProduct(category){
+        return await productDao.getALLCategoryProductByIdDao(category);
+    }
 
-        if (!title || !description || !price || !code || !stock || !category || !thumbnails) {
+    async createProduct(product) {
+        const { title, description, price, code, stock, category, thumbnails, status = true , owner,  category_product  } = product;
+
+        if (!title || !description || !price || !code || !stock || !category || !thumbnails || !category_product) {
             throw new Error("Debes completar todos los campos obligatorios.");
         }
 
         try {
-            const createdProduct = await productDao.createProductDao({ title, description, price, code, stock, category, thumbnails, status });
+            const createdProduct = await productDao.createProductDao({ title, description, price, code, stock, category, thumbnails, status , owner , category_product });
 
             return {
                 message: "Producto creado correctamente",
