@@ -1,5 +1,15 @@
 import ProductDao from "../dao/productDao.js";
 const productDao = new ProductDao();
+import dotenv from 'dotenv';
+import nodemailer from 'nodemailer';
+import UserManager from "./userManager.js";
+
+const userManager = new UserManager();
+dotenv.config();
+
+const EMAIL = process.env.EMAIL_USER;
+const PASS = process.env.EMAIL_PASS;
+
 
 class ProductManager {
     async getAllProducts() {
@@ -10,23 +20,23 @@ class ProductManager {
         return await productDao.getProductByIdDao(pid);
     }
 
-    async getAllCategoryProduct(){
+    async getAllCategoryProduct() {
         return await productDao.getALLCategoryProductDao();
     }
- 
-    async getCategoryProduct(category){
+
+    async getCategoryProduct(category) {
         return await productDao.getALLCategoryProductByIdDao(category);
     }
 
     async createProduct(product) {
-        const { title, description, price, code, stock, category, thumbnails, status = true , owner,  category_product  } = product;
+        const { title, description, price, code, stock, category, thumbnails, status = true, owner, category_product } = product;
 
         if (!title || !description || !price || !code || !stock || !category || !thumbnails || !category_product) {
             throw new Error("Debes completar todos los campos obligatorios.");
         }
 
         try {
-            const createdProduct = await productDao.createProductDao({ title, description, price, code, stock, category, thumbnails, status , owner , category_product });
+            const createdProduct = await productDao.createProductDao({ title, description, price, code, stock, category, thumbnails, status, owner, category_product });
 
             return {
                 message: "Producto creado correctamente",
@@ -48,11 +58,50 @@ class ProductManager {
 
     async deleteProduct(pid) {
         try {
-            const deletedProduct = await productDao.deleteProductDao(pid);
-            return deletedProduct;
+            const product = await productDao.getProductByIdDao(pid);
+            if (!product) throw new Error(`Producto con ID: ${pid} no encontrado`);
+
+            const ownerEmail = product.owner;
+            console.log("producto delete", ownerEmail)
+
+            const user = await userManager.getUserByEmail(ownerEmail);
+            // Si el usuario es premium, enviamos el correo
+            if (user && user.role === 'premium') {
+                this.sendEmailProductDelete(ownerEmail, pid); // No usamos await aquí para no retrasar la eliminación
+            }
+
+            // Eliminamos el producto y lo retornamos
+            return await productDao.deleteProductDao(pid);
+
         } catch (error) {
             throw new Error(`Error al eliminar el producto: ${error.message}`);
         }
+    }
+
+
+    async sendEmailProductDelete(email, productId) {
+        const transport = nodemailer.createTransport({
+            service: 'gmail',
+            port: 587,
+            auth: {
+                user: EMAIL,
+                pass: PASS
+            }
+        });
+
+        await transport.sendMail({
+            from: 'Edgar Steinberg <s.steinberg2019@gmail.com>',
+            to: email,
+            subject: 'Eliminación de Producto',
+            html: `<div style="font-family: Arial, sans-serif; color: #333;">
+                        <h1>Notificación de Eliminación de Producto</h1>
+                        <p>El producto con ID ${productId} ha sido eliminado de la plataforma.</p>
+                        <p>Si tienes alguna pregunta, por favor contáctanos.</p>
+                        <p>Gracias,</p>
+                        <p>El equipo de soporte de Tres Estrellas</p>
+                        </div>`,
+        });
+
     }
 }
 

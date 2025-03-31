@@ -44,6 +44,21 @@ class CartManager {
         }
     }
 
+    async clearCart(cid) {
+        try {
+            // Llamamos directamente al DAO para vaciar los productos del carrito
+            const updatedCart = await cartDao.clearCart(cid); 
+    
+            // Verificamos si el carrito fue actualizado (vacío)
+            if (!updatedCart) {
+                throw new Error("No se pudo vaciar el carrito.");
+            }
+    
+            return updatedCart; // Devuelve el carrito vacío o actualizado
+        } catch (error) {
+            throw new Error(`Error al vaciar el carrito: ${error.message}`);
+        }
+    }
     async deleteCart(cid) {
         try {
             return await cartDao.deleteCartDao(cid);

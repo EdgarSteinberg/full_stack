@@ -1,0 +1,149 @@
+# 🔹 Si necesitas agregar más detalles a una respuesta, edita la sección example.
+# 🔹 Si quieres agregar un nuevo endpoint, copia una estructura similar y cambia la ruta y la lógica.
+# 🔹 Si necesitas parámetros adicionales en una ruta, agrégalos en la sección parameters.
+# 🔹 Si quieres cambiar el tipo de respuesta, modifica el example y ajusta responses.
+
+openapi: 3.0.0
+info:
+  title: API de Carritos
+  description: Documentación de la API para la gestión de carritos de compra
+  version: 1.0.0
+
+paths:
+  /api/carts:
+    get:
+      summary: Obtener todos los carritos
+      tags:
+        - Carts
+      responses:
+        '200':
+          description: Lista de todos los carritos
+          content:
+            application/json:
+              example:
+                carts: [
+                  { "_id": "64a67b3e8f1b2c001c4a8b91", "products": [] },
+                  { "_id": "64a67b3e8f1b2c001c4a8b92", "products": [{ "_id": "64a67b3e8f1b2c001c4a8b93", "quantity": 2 }] }
+                ]
+    post:
+      summary: Crear un nuevo carrito
+      tags:
+        - Carts
+      responses:
+        '200':
+          description: Carrito creado correctamente
+          content:
+            application/json:
+              example:
+                _id: "64a67b3e8f1b2c001c4a8b94"
+                products: []
+
+  /api/carts/{cid}:
+    get:
+      summary: Obtener un carrito por ID
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Carrito encontrado
+          content:
+            application/json:
+              example:
+                _id: "64a67b3e8f1b2c001c4a8b91"
+                products: [{ "_id": "64a67b3e8f1b2c001c4a8b93", "quantity": 2 }]
+    delete:
+      summary: Eliminar un carrito por ID
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Carrito eliminado correctamente
+          content:
+            application/json:
+              example:
+                message: "Carrito eliminado"
+
+  /api/carts/{cid}/products/{pid}:
+    post:
+      summary: Agregar un producto al carrito
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: pid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Producto agregado correctamente
+          content:
+            application/json:
+              example:
+                _id: "64a67b3e8f1b2c001c4a8b91"
+                products: [{ "_id": "64a67b3e8f1b2c001c4a8b93", "quantity": 1 }]
+    delete:
+      summary: Eliminar un producto del carrito
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: pid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Producto eliminado correctamente
+          content:
+            application/json:
+              example:
+                _id: "64a67b3e8f1b2c001c4a8b91"
+                products: []
+
+  /api/carts/{cid}/products/{pid}/decrease:
+    put:
+      summary: Disminuir la cantidad de un producto en el carrito
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: pid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Cantidad de producto disminuida correctamente
+          content:
+            application/json:
+              example:
+                _id: "64a67b3e8f1b2c001c4a8b91"
+                products: [{ "_id": "64a67b3e8f1b2c001c4a8b93", "quantity": 1 }]

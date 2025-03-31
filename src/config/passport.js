@@ -2,9 +2,12 @@
 import passport from 'passport';
 // Importa el paquete 'passport-jwt' que proporciona una estrategia de autenticación JWT para Passport
 import jwt, { ExtractJwt } from 'passport-jwt';
-
+import dotenv from 'dotenv';
+dotenv.config();
+const SECRET_KEY = process.env.SECRET_KEY;
 // Se extrae la estrategia de JWT desde el objeto 'jwt'
 const JWTStrategy = jwt.Strategy;
+
 
 // Función que inicializa y configura Passport con la estrategia de JWT
 const initializatePassport = () => {
@@ -16,7 +19,8 @@ const initializatePassport = () => {
                 jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
 
                 // Clave secreta utilizada para verificar la firma del JWT. Debe coincidir con la que se usa para firmar los tokens en tu aplicación.
-                secretOrKey: 'coderSecret'
+                // secretOrKey: 'coderSecret'
+                secretOrKey: SECRET_KEY
             },
             async (jwt_payload, done) => {  // Función de verificación llamada con el 'jwt_payload' decodificado
                 try{

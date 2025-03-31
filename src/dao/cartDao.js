@@ -61,9 +61,19 @@ class CartDao {
         );
     }
 
+    async clearCart(cid) {
+        return await cartModel.findOneAndUpdate(
+            { _id: cid }, // Encuentra el carrito por su ID
+            { $set: { products: [] } }, // Vacía el array de productos
+            { new: true } // Devuelve el carrito actualizado
+        );
+    }
+
+
     async deleteCartDao(cid) {
         return await cartModel.deleteOne({ _id: cid });
     }
+
 }
 
 export default CartDao;

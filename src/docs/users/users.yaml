@@ -1,0 +1,220 @@
+openapi: 3.0.0
+info:
+  title: API de Usuarios
+  description: API para la gestión de usuarios, autenticación y autorización
+  version: 1.0.0
+
+paths:
+  /api/users:
+    get:
+      summary: Obtener todos los usuarios
+      tags:
+        - Users
+      responses:
+        200:
+          description: Lista de usuarios
+        500:
+          description: Error del servidor
+
+  /api/users/{uid}:
+    get:
+      summary: Obtener un usuario por ID
+      tags:
+        - Users
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Datos del usuario
+        500:
+          description: Error del servidor
+    put:
+      summary: Actualizar un usuario por ID
+      tags:
+        - Users
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                age:
+                  type: integer
+      responses:
+        200:
+          description: Usuario actualizado
+        500:
+          description: Error del servidor
+    delete:
+      summary: Eliminar un usuario por ID
+      tags:
+        - Users
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Usuario eliminado
+        500:
+          description: Error del servidor
+
+  /api/users/register:
+    post:
+      summary: Registrar un nuevo usuario
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                age:
+                  type: integer
+      responses:
+        302:
+          description: Redirige a la página de login
+        500:
+          description: Error del servidor
+
+  /api/users/login:
+    post:
+      summary: Iniciar sesión
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        200:
+          description: Usuario autenticado
+        500:
+          description: Error del servidor
+
+  /api/users/logout:
+    post:
+      summary: Cerrar sesión
+      tags:
+        - Users
+      responses:
+        200:
+          description: Logout exitoso
+
+  /api/users/profile/profile:
+    get:
+      summary: Obtener perfil de usuario autenticado
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Datos del usuario autenticado
+        401:
+          description: No autorizado
+
+  /api/users/premium/{uid}:
+    put:
+      summary: Cambiar rol de usuario a premium
+      tags:
+        - Users 
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                role:
+                  type: string
+                  enum: ["user", "premium"]
+      responses:
+        200:
+          description: Rol cambiado
+        500:
+          description: Error del servidor
+
+  /api/users/{uid}/documents:
+    post:
+      summary: Subir documentos del usuario
+      tags:
+        - Users 
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                docs:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        200:
+          description: Documentos subidos correctamente
+        500:
+          description: Error del servidor
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

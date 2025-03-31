@@ -1,0 +1,490 @@
+openapi: 3.0.0
+info:
+  title: API de Products
+  version: 1.0.0
+paths:
+  /api/products:
+    get:
+       summary: Obtener todos los Products
+       tags:
+        - Products
+       description: Devuelve una lista de todos los Products disponibles en la tienda.
+       responses:
+        '200':
+          description: Lista de Products obtenida correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  payload:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                          example: "67bf4a91ef96fe54d40b8b25"
+                        title:
+                          type: string
+                          example: "motorola"
+                        description:
+                          type: string
+                          example: "motorola"
+                        price:
+                          type: number
+                          example: 270000
+                        code:
+                          type: string
+                          example: "1a10"
+                        stock:
+                          type: number
+                          example: 100
+                        status:
+                          type: boolean
+                          example: true
+                        category:
+                          type: string
+                          example: "67bdee434d08c40deb6a84c8"
+                        category_product:
+                          type: string
+                          example: "motorola"
+                        thumbnails:
+                          type: array
+                          items:
+                            type: string
+                            example: "Motorola-Moto-E14-2GB-64GB-RAM-Verde.png"
+                        owner:
+                          type: string
+                          example: "admin"
+                        __v:
+                          type: integer
+                          example: 0
+        '500':
+          description: Error en el servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  error:
+                    type: string
+                    example: "Error al obtener los Products."
+    post:
+      summary: Crear un nuevo producto
+      tags:
+        - Products
+      description: Crea un nuevo producto en la tienda. Requiere autenticación y autorización.
+      security:
+        - jwt: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: "motorola"
+                description:
+                  type: string
+                  example: "motorola"
+                price:
+                  type: number
+                  example: 270000
+                code:
+                  type: string
+                  example: "1a10"
+                stock:
+                  type: number
+                  example: 100
+                status:
+                  type: boolean
+                  example: true
+                category:
+                  type: string
+                  example: "67bdee434d08c40deb6a84c8"
+                category_product:
+                  type: string
+                  example: "motorola"
+                thumbnail:
+                  type: array
+                  items:
+                    type: string
+                  description: Archivos de imagen para el producto.
+      responses:
+        '200':
+          description: Producto creado correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  payload:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "Producto creado correctamente"
+                      product:
+                        type: object
+                        properties:
+                          _id:
+                            type: string
+                            example: "67bf4a91ef96fe54d40b8b25"
+                          title:
+                            type: string
+                            example: "motorola"
+                          description:
+                            type: string
+                            example: "motorola"
+                          price:
+                            type: number
+                            example: 270000
+                          code:
+                            type: string
+                            example: "1a10"
+                          stock:
+                            type: number
+                            example: 100
+                          status:
+                            type: boolean
+                            example: true
+                          category:
+                            type: string
+                            example: "67bdee434d08c40deb6a84c8"
+                          category_product:
+                            type: string
+                            example: "motorola"
+                          thumbnails:
+                            type: array
+                            items:
+                              type: string
+                              example: "Motorola-Moto-E14-2GB-64GB-RAM-Verde.png"
+                          owner:
+                            type: string
+                            example: "admin"
+                          __v:
+                            type: integer
+                            example: 0
+        '400':
+          description: Error al crear el producto
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  error:
+                    type: string
+                    example: "Debes completar todos los campos obligatorios."
+        '500':
+          description: Error en el servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  error:
+                    type: string
+                    example: "Error al crear el producto."
+  
+  /api/products/{pid}:
+    get:
+      summary: Obtener un producto por ID
+      tags:
+        - Products
+      description: Devuelve los detalles de un producto específico dado su ID.
+      parameters:
+        - in: path
+          name: pid
+          required: true
+          schema:
+            type: string
+            example: "67bf4a91ef96fe54d40b8b25"
+      responses:
+        '200':
+          description: Producto obtenido correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  payload:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        example: "67bf4a91ef96fe54d40b8b25"
+                      title:
+                        type: string
+                        example: "motorola"
+                      description:
+                        type: string
+                        example: "motorola"
+                      price:
+                        type: number
+                        example: 270000
+                      code:
+                        type: string
+                        example: "1a10"
+                      stock:
+                        type: number
+                        example: 100
+                      status:
+                        type: boolean
+                        example: true
+                      category:
+                        type: string
+                        example: "67bdee434d08c40deb6a84c8"
+                      category_product:
+                        type: string
+                        example: "motorola"
+                      thumbnails:
+                        type: array
+                        items:
+                          type: string
+                          example: "Motorola-Moto-E14-2GB-64GB-RAM-Verde.png"
+                      owner:
+                        type: string
+                        example: "admin"
+                      __v:
+                        type: integer
+                        example: 0
+        '404':
+          description: Producto no encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: "Producto no encontrado"
+        '500':
+          description: Error en el servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  error:
+                    type: string
+                    example: "Error al obtener el producto."
+    put:
+      summary: Actualizar un producto por ID
+      tags:
+        - Products
+      description: Actualiza los detalles de un producto específico dado su ID.
+      parameters:
+        - in: path
+          name: pid
+          required: true
+          schema:
+            type: string
+            example: "67bf4a91ef96fe54d40b8b25"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: "motorola"
+                description:
+                  type: string
+                  example: "motorola"
+                price:
+                  type: number
+                  example: 270000
+                code:
+                  type: string
+                  example: "1a10"
+                stock:
+                  type: number
+                  example: 100
+                status:
+                  type: boolean
+                  example: true
+                category:
+                  type: string
+                  example: "67bdee434d08c40deb6a84c8"
+                category_product:
+                  type: string
+                  example: "motorola"
+                thumbnails:
+                  type: array
+                  items:
+                    type: string
+                  example: ["image1.png", "image2.png"]
+      responses:
+        '200':
+          description: Producto actualizado correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  payload:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        example: "67bf4a91ef96fe54d40b8b25"
+                      title:
+                        type: string
+                        example: "motorola"
+                      description:
+                        type: string
+                        example: "motorola"
+                      price:
+                        type: number
+                        example: 270000
+                      code:
+                        type: string
+                        example: "1a10"
+                      stock:
+                        type: number
+                        example: 100
+                      status:
+                        type: boolean
+                        example: true
+                      category:
+                        type: string
+                        example: "67bdee434d08c40deb6a84c8"
+                      category_product:
+                        type: string
+                        example: "motorola"
+                      thumbnails:
+                        type: array
+                        items:
+                          type: string
+                          example: "Motorola-Moto-E14-2GB-64GB-RAM-Verde.png"
+                      owner:
+                        type: string
+                        example: "admin"
+                      __v:
+                        type: integer
+                        example: 0
+        '400':
+          description: Error en la actualización del producto
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  error:
+                    type: string
+                    example: "Campos inválidos."
+        '500':
+          description: Error en el servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  error:
+                    type: string
+                    example: "Error al actualizar el producto."
+    delete:
+      summary: Eliminar un producto por ID
+      tags:
+        - Products
+      description: Elimina un producto específico dado su ID. Requiere autenticación y autorización.
+      security:
+        - jwt: []
+      parameters:
+        - in: path
+          name: pid
+          required: true
+          schema:
+            type: string
+            example: "67bf4a91ef96fe54d40b8b25"
+      responses:
+        '200':
+          description: Producto eliminado correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: "Producto eliminado correctamente"
+        '403':
+          description: No tienes permiso para eliminar este producto
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: "No tienes permiso para eliminar este producto"
+        '404':
+          description: Producto no encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: "Producto no encontrado"
+        '500':
+          description: Error en el servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  error:
+                    type: string
+                    example: "Error al eliminar el producto."

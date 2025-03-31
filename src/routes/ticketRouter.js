@@ -39,7 +39,7 @@ router.post("/", async (req, res) => {
     } catch (error) {
         res.status(500).send({ status: "error", error: error.message });
     }
-})
+});
 
 router.delete("/:tid", async (req, res) => {
     const { tid } = req.params;

@@ -54,24 +54,24 @@ router.get("/category/:category", async (req, res) => {
     }
 });
 
-// router.post("/", passport.authenticate('jwt', { session: false }), authorization(["admin", "premium"]), async (req, res, next) => {
-//     const { title, description, price, code, stock, status, category, thumbnails } = req.body;
-//     try {
-//         const result = await productService.createProduct({ title, description, price, code, stock, status, category, thumbnails });
-//         res.status(200).send({ status: "success", payload: result });
-
-//     } catch (error) {
-//         res.status(500).send({ status: "error", error: error.message });
-//     }
-// });
 
 
 router.post("/", passport.authenticate('jwt', { session: false }), authorization(["admin", "premium"]),
     uploader.fields([{ name: 'thumbnail', maxCount: 5 }]),
     async (req, res) => {
         try {
-            const { title, description, price, code, stock, status, category ,category_product} = req.body;
-            console.log(req.body);
+            let { title, description, price, code, stock, status, category, category_product } = req.body;
+
+            // Asignar 'true' a status si no está definido
+            status = status !== undefined ? status : true;
+
+            // Accede a los archivos
+            const thumbnails1 = req.files['thumbnail']; // Si hay más de un archivo
+            console.log(thumbnails1); // Verifica que los archivos estén llegando correctamente
+
+            // Mostrar los datos que has recibido
+            console.log({ title, description, price, code, stock, status, category, category_product });
+
             // Obtener el usuario autenticado
             const userEmail = req.user.email;
             const userRole = req.user.role;
@@ -89,15 +89,17 @@ router.post("/", passport.authenticate('jwt', { session: false }), authorization
                 price,
                 code,
                 stock,
-                status,
+                status,  // status ahora está asegurado con valor predeterminado
                 category,
                 thumbnails,
-                owner, // <- Aquí se envía explícitamente el owner
+                owner,  // Aquí se envía explícitamente el owner
                 category_product
             });
 
+            // res.redirect('http://localhost:5173/postProduct')
             res.status(200).send({ status: "success", payload: result });
         } catch (error) {
+            console.error("Error en la creación del producto:", error); // Detalles del error en la consola
             res.status(500).send({ status: "error", error: error.message });
         }
     }
@@ -118,7 +120,7 @@ router.put("/:pid", async (req, res) => {
 
 
 router.delete("/:pid", passport.authenticate('jwt', { session: false }), authorization(["admin", "premium"]), async (req, res) => {
-    console.log("Token recibido:", req.headers.authorization);
+    //console.log("Token recibido:", req.headers.authorization);
 
     const { pid } = req.params;
     const userEmail = req.user.email; // El email del usuario autenticado
