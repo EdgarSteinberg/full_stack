@@ -40,12 +40,15 @@ if (cluster.isPrimary) {
     dotenv.config();
 
     // Inicializa Express dentro del worker
-    
+
     const app = express();
 
     // Configuración de CORS
     const corsOptions = {
-        origin: 'http://localhost:5173', // Asegúrate de que este sea el dominio de tu frontend
+        origin: [
+            'http://localhost:5173',
+            'https://mobilematrix.netlify.app'
+        ], // Asegúrate de que este sea el dominio de tu frontend
         credentials: true,  // Permite el envío de cookies (como el token JWT)
         methods: ['GET', 'POST', 'PUT', 'DELETE'],
         allowedHeaders: ['Content-Type', 'Authorization']  // Permite encabezados específicos
@@ -67,7 +70,7 @@ if (cluster.isPrimary) {
 
     //MongoDB connect
     //const uri = process.env.MONGO_URI;
-    
+
     const MONGO_URI = process.env.NODE_ENV === 'test' ? process.env.MONGO_URI_TEST : process.env.MONGO_URI;
     mongoose.connect(MONGO_URI);
 
