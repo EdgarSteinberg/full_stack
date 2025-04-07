@@ -81,7 +81,7 @@ router.post("/register", async (req, res) => {
     }
 
     try {
-        const result = await userServices.register({ first_name, last_name, email, password, age , role });
+        const result = await userServices.register({ first_name, last_name, email, password, age, role });
         if (result.status === "error") {
             return res.status(400).send(result); // Devolver error 400 si el email ya está registrado
         }
@@ -134,7 +134,7 @@ router.post("/login", async (req, res) => {
             maxAge: 60 * 60 * 1000,  // 1 hora
             httpOnly: true,  // Evita que el token sea accesible desde el frontend
             secure: process.env.NODE_ENV === 'production',  // Solo en producción
-            sameSite: 'Strict',
+            sameSite: 'None',
         });
 
         if (result.status === "error") {
@@ -289,9 +289,9 @@ router.post("/:uid/documents",
 router.delete('/', async (req, res) => {
     try {
         const result = await userServices.deleteInactiveUsers();
-        res.status(200).send({status: "success", payload : result});
-    } catch(error){
-        res.status(500).send({status: "error" , error: error.message});
+        res.status(200).send({ status: "success", payload: result });
+    } catch (error) {
+        res.status(500).send({ status: "error", error: error.message });
     }
 });
 

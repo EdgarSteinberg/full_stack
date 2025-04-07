@@ -15,7 +15,7 @@ router.get('/', passport.authenticate('github', { scope: ['user:email'] }), (req
             maxAge: 60 * 60 * 1000,  // 1 hora
             httpOnly: false, // Permite el acceso desde JavaScript
             secure: process.env.NODE_ENV === 'production',  // Asegúrate de usar `secure` en producción
-            sameSite: 'Strict',      // Para proteger la cookie en sitios cruzados
+            sameSite: 'None',      // Para proteger la cookie en sitios cruzados
         }).redirect('https://mobilematrix.netlify.app//');
         
     } else {
