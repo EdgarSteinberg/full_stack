@@ -67,23 +67,9 @@ router.post("/reset-password", async (req, res) => {
         res.status(500).send({ status: "error", error: error.message })
     }
 })
-// router.post("/register", async (req, res) => {
-//     const { first_name, last_name, email, password, age } = req.body;
 
-//     if (!first_name || !last_name || !email || !password || !age) {
-//         return res.status(500).send({ status: "error", error: "faltan campos que completar!" });
-//     }
-
-//     try {
-//         const result = await userServices.register({ first_name, last_name, email, password, age });
-//         res.redirect('http://localhost:5173/login')
-
-//     } catch (error) {
-//         res.status(500).send({ status: "error", error: error.message });
-//     }
-// });
 router.post("/register", async (req, res) => {
-    const { first_name, last_name, email, password, age } = req.body;
+    const { first_name, last_name, email, password, age, role } = req.body;
 
     if (!first_name || !last_name || !email || !password || !age) {
         req.logger.warning('Intento de registro fallido: faltan campos', {
@@ -95,7 +81,7 @@ router.post("/register", async (req, res) => {
     }
 
     try {
-        const result = await userServices.register({ first_name, last_name, email, password, age });
+        const result = await userServices.register({ first_name, last_name, email, password, age , role });
         if (result.status === "error") {
             return res.status(400).send(result); // Devolver error 400 si el email ya está registrado
         }
@@ -111,41 +97,6 @@ router.post("/register", async (req, res) => {
     }
 });
 
-
-// router.post("/login", async (req, res) => {
-//     const { email, password } = req.body;
-//     if (!email || !password) {
-//         req.logger.warning('Intento de login fallido: faltan campos', {
-//             ip: req.ip,
-//             email: email, // Si es relevante
-//             message: 'Faltan email o contraseña'
-//         });
-//         return res.status(400).send({ status: "error", error: "Email y contraseña son requeridos" });
-//     }
-
-//     try {
-//         const result = await userServices.loginUser(email, password);
-//         const user = result.user;
-
-//         const token = jwt.sign({ _id: user._id, email: user.email, role: user.role, first_name: user.first_name, last_name: user.last_name, age: user.age }, SECRET_KEY, { expiresIn: '1h' });
-
-//         res.cookie('coderCookieToken', token, {
-//             maxAge: 60 * 60 * 1000,  // 1 hora
-//             httpOnly: true,  // Evita que el token sea accesible desde el frontend
-//             secure: process.env.NODE_ENV === 'production',  // Asegúrate de usar cookies seguras en producción
-//             sameSite: 'Strict',  // Evita que la cookie sea enviada en solicitudes de terceros
-//         });
-
-//         res.status(200).send({ status: "success", payload: user });
-//     } catch (error) {
-//         req.logger.warning('Intento de login fallido', {
-//             ip: req.ip,
-//             email: email,
-//             message: 'Credenciales incorrectas'
-//         });
-//         res.status(500).send({ status: "error", error: error.message });
-//     }
-// });
 
 router.post("/login", async (req, res) => {
     const { email, password } = req.body;
@@ -190,8 +141,8 @@ router.post("/login", async (req, res) => {
             return res.status(400).send(result); // Devolver error 400 si el email ya está registrado
         }
 
-        return res.status(200).send({ status: "success", payload: user });
-
+        //return res.status(200).send({ status: "success", payload: user });
+        return res.status(200).send({ status: "success", payload: user, token });
     } catch (error) {
         req.logger.error('Error en el proceso de login', {
             ip: req.ip,
@@ -205,44 +156,10 @@ router.post("/login", async (req, res) => {
 });
 
 
-
-// router.post("/login", async (req, res) => {
-//     const { email, password } = req.body;
-//     if (!email || !password) {
-//         return res.status(400).send({ status: "error", error: "Email y contraseña son requeridos" });
-//     }
-//     try {
-
-//         const result = await userServices.loginUser(email, password);
-
-//         const user = result.user;
-//         console.log("User ruta", user);
-//         // const token = jwt.sign({ _id: user._id, email: user.email, role: user.role }, SECRET_KEY, { expiresIn: '1h' });
-//         const token = jwt.sign({ _id: user._id, email: user.email, role: user.role, first_name: user.first_name, last_name: user.last_name, age: user.age }, SECRET_KEY, { expiresIn: '1h' });
-
-//         //console.log("token ruta", token)
-
-
-//         //res.cookie('coderCookieToken', token, { maxAge: 60 * 60 * 1000 })
-//         res.cookie('coderCookieToken', token, {
-//             maxAge: 60 * 60 * 1000,  // 1 hora
-//             httpOnly: true,  // Evita que el token sea accesible desde el frontend
-//             secure: process.env.NODE_ENV === 'production',  // Asegúrate de usar cookies seguras en producción
-//             sameSite: 'Strict',  // Evita que la cookie sea enviada en solicitudes de terceros
-//         });
-
-//         // res.redirect('http://localhost:5173/productos')
-//         res.status(200).send({ status: "success", payload: user })
-//     } catch (error) {
-//         res.status(500).send({ status: "error", error: error.message });
-//     }
-// });
-
 router.post('/logout', (req, res) => {
     res.clearCookie('coderCookieToken', { httpOnly: true, sameSite: 'Strict' });
     res.status(200).send({ message: 'Logout exitoso' });
 });
-
 
 
 router.get('/profile/profile', passport.authenticate('jwt', { session: false }), async (req, res) => {
@@ -298,7 +215,7 @@ router.put("/:uid", async (req, res) => {
     const updated = req.body
     try {
         const result = await userServices.updatedUser(uid, updated);
-        res.status(200).send({ status: "succes", payload: result });
+        res.status(200).send({ status: "success", payload: result });
     } catch (error) {
         res.status(500).send({ status: "error", error: error.message });
     }

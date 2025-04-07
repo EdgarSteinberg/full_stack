@@ -1,34 +1,20 @@
-// import mongoose from "mongoose";
-
-
-// const ticketCollection = "ticket_urban";
-
-
-// const ticketSchema = new mongoose.Schema({
-//     code: { type: String, unique: true },
-//     purchase_datetime: { type: Date, default: Date.now() },
-//     amount: { type: Number },
-//     purchaser: { type: String }
-// })
-
-// const ticketModel = mongoose.model(ticketCollection, ticketSchema);
-
-// export default ticketModel;
 
 
 import mongoose from "mongoose";
 
 const ticketSchema = new mongoose.Schema({
-    code: { type: String, required: true, unique: true },
-    amount: { type: Number, required: true },
-    purchaser: { type: mongoose.Schema.Types.ObjectId, ref: "users_urban", required: true }, // Referencia a usuario
+    code: { type: String, required: true, unique: true }, // Código único del ticket generado al momento de la compra
+    amount: { type: Number, required: true }, // Monto total de la compra
+    purchaser: { type: mongoose.Schema.Types.ObjectId, ref: "users_urban", required: true },  // Referencia al usuario que realizó la compra
     cart: [
         {
-            product: { type: mongoose.Schema.Types.ObjectId, ref: "products_urban", required: true },
-            quantity: { type: Number, required: true }
+            product: { type: mongoose.Schema.Types.ObjectId, ref: "products_urban", required: true }, // Producto que fue comprado (referencia al modelo de producto)
+            quantity: { type: Number, required: true } // Cantidad del producto comprado
         }
     ],
-    purchaseDateTime: { type: Date, default: Date.now }
+    purchaseDateTime: { type: Date, default: Date.now },  // Fecha y hora en la que se generó el ticket de compra
+    
+
 });
 
 const ticketModel = mongoose.model("Ticket", ticketSchema);

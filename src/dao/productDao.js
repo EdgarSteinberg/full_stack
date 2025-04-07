@@ -22,9 +22,9 @@ class ProductDao {
     async getALLCategoryProductByIdDao(category_name) {
         // Buscar la categoría por nombre para obtener su _id
         const category = await categorieModels.findOne({ category_name }).lean();
-        
+
         if (!category) return []; // Si no existe la categoría, devolvemos un array vacío
-    
+
         // Buscar productos con la categoría poblada
         return await productModel
             .find({ category: category._id }) // Filtramos por el ObjectId de la categoría
@@ -34,7 +34,7 @@ class ProductDao {
             })
             .lean();
     }
-    
+
     // Crear un nuevo producto
     async createProductDao(product) {
         return await productModel.create(product);
@@ -42,12 +42,27 @@ class ProductDao {
 
     // Actualizar un producto existente
     async updateProductDao(pid, update) {
-        return await productModel.findByIdAndUpdate(pid, { $set: update }, { new: true });
+        return await productModel.findByIdAndUpdate(
+            pid,
+            { $set: update },
+            { new: true }
+        );
+    }
+
+    // Incrementar la cantidad de compras de un producto
+    async incrementPurchasesDao(productId, quantity = 1) {
+        return await productModel.findByIdAndUpdate(
+            productId,
+            { $inc: { purchases: quantity } },
+            { new: true }
+        );
     }
 
     // Eliminar un producto por ID
     async deleteProductDao(pid) {
-        return await productModel.deleteOne({ _id: pid });
+        return await productModel.deleteOne(
+            { _id: pid }
+        );
     }
 }
 

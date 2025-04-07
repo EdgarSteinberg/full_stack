@@ -46,7 +46,7 @@ class UserManager {
     // - Crea un carrito para el usuario.
     // - Hashea la contraseña y crea el usuario en la base de datos.
     async register(user) {
-        const { first_name, last_name, email, password, age } = user;
+        const { first_name, last_name, email, password, age, role } = user;
         if (!first_name || !last_name || !age || !email || !password) {
             throw new Error("Debes completar todos los campos");
         }
@@ -65,9 +65,10 @@ class UserManager {
                 age,
                 email,
                 password: hashedPassword,
-                cart
+                cart,
+                role: role ?? "user" 
             };
-
+            console.log("Usuario creado:", newUser);  // 🔍 Verifica que role sea "premium"
             return await userDao.createUserDao(newUser);
         } catch (error) {
             throw new Error(`Error al registrar usuario: ${error.message}`);

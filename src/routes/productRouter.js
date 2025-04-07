@@ -66,8 +66,8 @@ router.post("/", passport.authenticate('jwt', { session: false }), authorization
             status = status !== undefined ? status : true;
 
             // Accede a los archivos
-            const thumbnails1 = req.files['thumbnail']; // Si hay más de un archivo
-            console.log(thumbnails1); // Verifica que los archivos estén llegando correctamente
+            //const thumbnails1 = req.files['thumbnail']; // Si hay más de un archivo
+            //console.log(thumbnails1); // Verifica que los archivos estén llegando correctamente
 
             // Mostrar los datos que has recibido
             console.log({ title, description, price, code, stock, status, category, category_product });
@@ -79,8 +79,15 @@ router.post("/", passport.authenticate('jwt', { session: false }), authorization
             // Solo se pasa el owner si viene del req.user
             const owner = userRole === 'premium' ? userEmail : 'admin';
 
+            // Accede a los archivos con chequeo seguro
+const thumbnails1 = req.files?.['thumbnail'] || [];
+
+
+// Procesar imágenes (si hay)
+const thumbnails = thumbnails1.map(file => file.filename);
+
             // Procesar imágenes (si hay)
-            const thumbnails = req.files['thumbnail'] ? req.files['thumbnail'].map(file => file.filename) : [];
+            //const thumbnails = req.files['thumbnail'] ? req.files['thumbnail'].map(file => file.filename) : [];
 
             // Crear el producto con owner
             const result = await productService.createProduct({

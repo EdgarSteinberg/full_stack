@@ -12,7 +12,8 @@ const productSchema = new mongoose.Schema({
     category: { type: mongoose.Schema.Types.ObjectId, ref:"urban_category", required: true },
     category_product: { type: String, required: true }, // Nombre de la categoría
     thumbnails: { type: [String], default: [] }, // ✅ Corregido: Array de strings
-    owner: { type: String, default: "admin" }
+    owner: { type: String, default: "admin" },
+    purchases: { type: Number, default: 0 } // Campo para contar la cantidad total de productos comprados en este ticket
 });
 
 const productModel = mongoose.model(productCollection, productSchema);

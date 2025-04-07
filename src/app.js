@@ -66,8 +66,10 @@ if (cluster.isPrimary) {
 
 
     //MongoDB connect
-    const uri = process.env.MONGO_URI;
-    mongoose.connect(uri);
+    //const uri = process.env.MONGO_URI;
+    
+    const MONGO_URI = process.env.NODE_ENV === 'test' ? process.env.MONGO_URI_TEST : process.env.MONGO_URI;
+    mongoose.connect(MONGO_URI);
 
     initializatePassport();
     initializePassportGitHub();

@@ -38,10 +38,11 @@ class ProductManager {
         try {
             const createdProduct = await productDao.createProductDao({ title, description, price, code, stock, category, thumbnails, status, owner, category_product });
 
-            return {
-                message: "Producto creado correctamente",
-                product: createdProduct
-            };
+            // return {
+            //     message: "Producto creado correctamente",
+            //     product: createdProduct
+            // };
+            return createdProduct
         } catch (error) {
             throw new Error(`Error al crear el producto: ${error.message}`);
         }
@@ -55,6 +56,28 @@ class ProductManager {
             throw new Error(`Error al actualizar el producto: ${error.message}`);
         }
     }
+
+
+    async incrementarPurchases(productId, quantity = 1) {
+        // Validamos la cantidad
+        if (typeof quantity !== 'number' || quantity <= 0) {
+            throw new Error(`La cantidad debe ser un número positivo. Recibido: ${quantity}`);
+        }
+    
+        // Verificamos si el producto existe
+        const producto = await productDao.getProductByIdDao(productId);
+        if (!producto) {
+            throw new Error(`El producto con ID: ${productId} no se encuentra`);
+        }
+    
+        try {
+            const updatedProduct = await productDao.incrementPurchasesDao(productId, quantity);
+            return updatedProduct;
+        } catch (error) {
+            throw new Error("Error al incrementar la compra: " + error.message);
+        }
+    }
+    
 
     async deleteProduct(pid) {
         try {
