@@ -46,7 +46,6 @@ if (cluster.isPrimary) {
     // Configuración de CORS
     const corsOptions = {
         origin: [
-            'http://localhost:5173',
             'https://mobilematrix.netlify.app'
         ], // Asegúrate de que este sea el dominio de tu frontend
         credentials: true,  // Permite el envío de cookies (como el token JWT)
