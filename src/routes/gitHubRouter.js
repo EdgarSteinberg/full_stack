@@ -16,11 +16,11 @@ router.get('/', passport.authenticate('github', { scope: ['user:email'] }), (req
             httpOnly: false, // Permite el acceso desde JavaScript
             secure: process.env.NODE_ENV === 'production',  // Asegúrate de usar `secure` en producción
             sameSite: 'Strict',      // Para proteger la cookie en sitios cruzados
-        }).redirect('http://localhost:5173/');
+        }).redirect('https://mobilematrix.netlify.app//');
         
     } else {
         console.log("No se encontró el token en req.user");
-        res.redirect('http://localhost:5173/login');
+        res.redirect('https://mobilematrix.netlify.app/login');
     }
 }); 
 
