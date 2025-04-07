@@ -133,7 +133,7 @@ router.post("/login", async (req, res) => {
         res.cookie('coderCookieToken', token, {
             maxAge: 60 * 60 * 1000,  // 1 hora
             httpOnly: true,  // Evita que el token sea accesible desde el frontend
-            secure: process.env.NODE_ENV === 'production',  // Solo en producción
+            secure: true,  // Solo en producción
             sameSite: 'None',
         });
 
@@ -157,7 +157,7 @@ router.post("/login", async (req, res) => {
 
 
 router.post('/logout', (req, res) => {
-    res.clearCookie('coderCookieToken', { httpOnly: true, sameSite: 'Strict' });
+    res.clearCookie('coderCookieToken', { httpOnly: true, sameSite: 'None' });
     res.status(200).send({ message: 'Logout exitoso' });
 });
 
