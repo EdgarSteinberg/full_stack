@@ -157,7 +157,11 @@ router.post("/login", async (req, res) => {
 
 
 router.post('/logout', (req, res) => {
-    res.clearCookie('coderCookieToken', { httpOnly: true, sameSite: 'None' });
+    res.clearCookie('coderCookieToken', {
+        httpOnly: true,
+        sameSite: 'None',
+        secure: true // ¡Este es el que falta!
+    });
     res.status(200).send({ message: 'Logout exitoso' });
 });
 
