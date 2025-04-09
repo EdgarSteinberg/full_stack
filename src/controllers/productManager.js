@@ -87,7 +87,7 @@ class ProductManager {
             const ownerEmail = product.owner;
             console.log("producto delete", ownerEmail)
             
-            const user = await userManager.getUserByEmail(ownerEmail);
+            //const user = await userManager.getUserByEmail(ownerEmail);
             // Si el usuario es premium, enviamos el correo
             // if (user && user.role === 'premium') {
             //     this.sendEmailProductDelete(ownerEmail, pid); // No usamos await aquí para no retrasar la eliminación
