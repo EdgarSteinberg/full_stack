@@ -59,10 +59,15 @@ class ProductDao {
     }
 
     // Eliminar un producto por ID
+    // async deleteProductDao(pid) {
+    //     return await productModel.deleteOne(
+    //         { _id: pid }
+    //     );
+    // }
+
     async deleteProductDao(pid) {
-        return await productModel.deleteOne(
-            { _id: pid }
-        );
+        const result = await productModel.deleteOne({ _id: Types.ObjectId(pid) });
+        console.log("Resultado:", result); // <- esto te dice si lo borró
     }
 }
 
