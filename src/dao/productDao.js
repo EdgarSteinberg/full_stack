@@ -66,7 +66,7 @@ class ProductDao {
     // }
 
     async deleteProductDao(pid) {
-        const result = await productModel.deleteOne({ _id: Types.ObjectId(pid) });
+        const result = await productModel.deleteOne({ _id: pid });
         console.log("Resultado:", result); // <- esto te dice si lo borró
     }
 }
