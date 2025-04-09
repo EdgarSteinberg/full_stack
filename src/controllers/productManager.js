@@ -63,13 +63,13 @@ class ProductManager {
         if (typeof quantity !== 'number' || quantity <= 0) {
             throw new Error(`La cantidad debe ser un número positivo. Recibido: ${quantity}`);
         }
-    
+
         // Verificamos si el producto existe
         const producto = await productDao.getProductByIdDao(productId);
         if (!producto) {
             throw new Error(`El producto con ID: ${productId} no se encuentra`);
         }
-    
+
         try {
             const updatedProduct = await productDao.incrementPurchasesDao(productId, quantity);
             return updatedProduct;
@@ -77,7 +77,7 @@ class ProductManager {
             throw new Error("Error al incrementar la compra: " + error.message);
         }
     }
-    
+
 
     async deleteProduct(pid) {
         try {
@@ -86,17 +86,28 @@ class ProductManager {
 
             const ownerEmail = product.owner;
             console.log("producto delete", ownerEmail)
-            
+
             //const user = await userManager.getUserByEmail(ownerEmail);
             // Si el usuario es premium, enviamos el correo
             // if (user && user.role === 'premium') {
             //     this.sendEmailProductDelete(ownerEmail, pid); // No usamos await aquí para no retrasar la eliminación
             // }
-            if (ownerEmail !== "admin") {
-                const user = await userManager.getUserByEmail(ownerEmail);
-                if (user && user.role === 'premium') {
-                    this.sendEmailProductDelete(ownerEmail, pid); // sin await
-                }
+
+
+            //"Si el dueño NO es admin, busco al user por email y le mando el mail si es premium".
+            //Si el owner es "admin", no hago nada con el user ni con mails.
+            //     if(ownerEmail !== "admin") {
+            //     const user = await userManager.getUserByEmail(ownerEmail);
+            //     if (user && user.role === 'premium') {
+            //         this.sendEmailProductDelete(ownerEmail, pid); // sin await
+            //     }
+            // }
+            if (ownerEmail !== "admin")
+                return await productDao.deleteProductDao(pid);
+
+            const user = await userManager.getUserByEmail(ownerEmail);
+            if (user?.role === 'premium') {
+                this.sendEmailProductDelete(ownerEmail, pid);
             }
             // Eliminamos el producto y lo retornamos
             return await productDao.deleteProductDao(pid);
