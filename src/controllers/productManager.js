@@ -102,7 +102,7 @@ class ProductManager {
             //         this.sendEmailProductDelete(ownerEmail, pid); // sin await
             //     }
             // }
-            if (ownerEmail !== "admin")
+            if (ownerEmail === "admin")
                 return await productDao.deleteProductDao(pid);
 
             const user = await userManager.getUserByEmail(ownerEmail);
