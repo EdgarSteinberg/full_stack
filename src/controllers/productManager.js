@@ -86,13 +86,18 @@ class ProductManager {
 
             const ownerEmail = product.owner;
             console.log("producto delete", ownerEmail)
-
+            
             const user = await userManager.getUserByEmail(ownerEmail);
             // Si el usuario es premium, enviamos el correo
-            if (user && user.role === 'premium') {
-                this.sendEmailProductDelete(ownerEmail, pid); // No usamos await aquí para no retrasar la eliminación
+            // if (user && user.role === 'premium') {
+            //     this.sendEmailProductDelete(ownerEmail, pid); // No usamos await aquí para no retrasar la eliminación
+            // }
+            if (ownerEmail !== "admin") {
+                const user = await userManager.getUserByEmail(ownerEmail);
+                if (user && user.role === 'premium') {
+                    this.sendEmailProductDelete(ownerEmail, pid); // sin await
+                }
             }
-
             // Eliminamos el producto y lo retornamos
             return await productDao.deleteProductDao(pid);
 
