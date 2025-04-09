@@ -80,11 +80,11 @@ router.post("/", passport.authenticate('jwt', { session: false }), authorization
             const owner = userRole === 'premium' ? userEmail : 'admin';
 
             // Accede a los archivos con chequeo seguro
-const thumbnails1 = req.files?.['thumbnail'] || [];
+            const thumbnails1 = req.files?.['thumbnail'] || [];
 
 
-// Procesar imágenes (si hay)
-const thumbnails = thumbnails1.map(file => file.filename);
+            // Procesar imágenes (si hay)
+            const thumbnails = thumbnails1.map(file => file.filename);
 
             // Procesar imágenes (si hay)
             //const thumbnails = req.files['thumbnail'] ? req.files['thumbnail'].map(file => file.filename) : [];
@@ -133,10 +133,14 @@ router.delete("/:pid", passport.authenticate('jwt', { session: false }), authori
     const userEmail = req.user.email; // El email del usuario autenticado
     const userRole = req.user.role;   // El rol del usuario (admin o premium)
 
+    console.log("req.user:", req.user);
+    console.log("userRole:", userRole);
+    
     try {
         // Obtener el producto de la base de datos
         const product = await productService.getProductById(pid);
-
+        
+        console.log("product.owner:", product.owner);
         if (!product) {
             return res.status(404).send({ status: "error", message: "Producto no encontrado" });
         }
