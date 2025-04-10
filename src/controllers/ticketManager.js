@@ -43,35 +43,7 @@ class TicketManager {
 
         const code = await this.generateUniqueCode();
 
-        /*      try {
-                 const newTicket = {
-                     code,
-                     amount,
-                     purchaser: new mongoose.Types.ObjectId(user._id),// Guardamos la referencia del usuario
-                     purchaser_dateTime: Date.now(),
-                     cart: cartData.products.map(p => ({
-                         product: p.product._id, // Referencia al producto
-                         quantity: p.quantity
-     
-                     }))
-                 };
-     
-                 // return await ticketDao.createTicketDao(newTicket);
-     
-     
-                 const createdTicket = await ticketDao.createTicketDao(newTicket);
-     
-                 // 🔥 VACIAR EL CARRITO DESPUÉS DE GENERAR EL TICKET
-                 await cartManager.clearCart(cart);
-     
-                 // 🛠️ LOG PARA VERIFICAR QUE SE VACÍO
-                 const updatedCart = await cartManager.getCartById(cart);
-                 console.log("Carrito después de vaciarlo:", updatedCart)
-     
-                 return createdTicket;
-             } catch (error) {
-                 throw new Error(`Error al crear el ticket: ${error.message}`);
-             } */
+      
         try {
             const newTicket = {
                 code,
@@ -98,7 +70,7 @@ class TicketManager {
                 const quantity = item.quantity;
 
                 try {
-                    await productController.incrementarPurchases(productId, quantity);
+                    await productManager.incrementarPurchases(productId, quantity);
                 } catch (error) {
                     console.error(`Error al incrementar purchases del producto ${productId}:`, error.message);
                     // Podés decidir si lanzar el error o seguir con los demás

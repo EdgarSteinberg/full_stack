@@ -154,32 +154,7 @@ router.delete("/:pid", passport.authenticate('jwt', { session: false }), authori
             return res.status(403).send({ status: "error", message: "No tienes permiso para eliminar este producto" });
         }
 
-        // const product = await productService.getProductById(pid);
-        // console.log("Producto obtenido:", product); // <= Siempre lo ves
-
-        // if (!product) {
-        //     return res.status(404).send({ status: "error", message: "Producto no encontrado" });
-        // }
-
-        // console.log("Propietario del producto:", product.owner);
-        // console.log("Rol del usuario:", userRole);
-
-        // if (userRole === 'admin') {
-        //     await productService.deleteProduct(pid);
-        //     console.log("producto delete admin");
-        //     return res.status(200).send({ status: "success", message: "Producto eliminado correctamente" });
-        // }
-
-        // if (userRole === 'premium' && product.owner === userEmail) {
-        //     await productService.deleteProduct(pid);
-        //     console.log("producto delete premium");
-        //     return res.status(200).send({ status: "success", message: "Producto eliminado correctamente" });
-        // }
-
-        // console.log("No autorizado para borrar este producto");
-        // return res.status(403).send({ status: "error", message: "No tienes permiso para eliminar este producto" });
-
-
+        
     } catch (error) {
         res.status(500).send({ status: "error", error: error.message });
     }
