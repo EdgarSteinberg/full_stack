@@ -40,11 +40,11 @@ router.post("/", async (req, res) => {
 
 router.post("/:cid/products/:pid", async (req, res) => {
     const { cid, pid } = req.params;
+    const { quantity = 1 } = req.body; // si no mandan nada, agrega 1 por defecto
 
     try {
-        const result = await cartServices.addProductToCart(cid, pid);
-        res.status(200).send({ status: "Succes", payload: result });
-
+        const result = await cartServices.addProductToCart(cid, pid, quantity);
+        res.status(200).send({ status: "Success", payload: result });
     } catch (error) {
         res.status(500).send({ status: "error", error: error.message });
     }

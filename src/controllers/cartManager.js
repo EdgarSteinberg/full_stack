@@ -18,9 +18,9 @@ class CartManager {
         }
     }
 
-    async addProductToCart(cid, pid) {
+    async addProductToCart(cid, pid, quantity = 1) {
         try {
-            return await cartDao.addProductToCartDao(cid, pid);
+            return await cartDao.addProductToCartDao(cid, pid, quantity);
         } catch (error) {
             throw new Error(`Error al agregar el producto al carrito: ${error.message}`);
         }
