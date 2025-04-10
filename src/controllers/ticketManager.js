@@ -43,7 +43,7 @@ class TicketManager {
 
         const code = await this.generateUniqueCode();
 
-      
+
         try {
             const newTicket = {
                 code,
@@ -61,6 +61,9 @@ class TicketManager {
             for (const item of cartData.products) {
                 const productId = item.product._id;
                 const quantity = item.quantity;
+
+                // 👇 Este log te va a mostrar qué estás intentando procesar
+                console.log(`Procesando producto ${productId} con cantidad: ${quantity}`);
 
                 try {
                     await productManager.incrementarPurchases(productId, quantity);
