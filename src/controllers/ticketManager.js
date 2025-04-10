@@ -58,19 +58,13 @@ class TicketManager {
 
             const createdTicket = await ticketDao.createTicketDao(newTicket);
 
-            // 🔄 Actualizar compras por producto
-            // await Promise.all(cartData.products.map(async (item) => {
-            //     const productId = item.product._id;
-            //     const quantity = item.quantity;
-            //     await productManager.incrementarPurchases(productId, quantity);
-            // }));
-            // 🔄 Actualizar purchases por producto de forma secuencial
             for (const item of cartData.products) {
                 const productId = item.product._id;
                 const quantity = item.quantity;
 
                 try {
                     await productManager.incrementarPurchases(productId, quantity);
+                    await productManager.decrementStock(productId, quantity);
                 } catch (error) {
                     console.error(`Error al incrementar purchases del producto ${productId}:`, error.message);
                     // Podés decidir si lanzar el error o seguir con los demás

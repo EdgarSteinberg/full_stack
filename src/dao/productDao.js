@@ -58,17 +58,18 @@ class ProductDao {
         );
     }
 
-    // Eliminar un producto por ID
-    // async deleteProductDao(pid) {
-    //     return await productModel.deleteOne(
-    //         { _id: pid }
-    //     );
-    // }
+    async decrementStockDao(productId, quantity) {
+        return await productModel.findByIdAndUpdate(
+            productId,
+            { $inc: { stock: -quantity } },
+            { new: true }
+        );
+    }
 
     async deleteProductDao(pid) {
-        const result = await productModel.deleteOne({ _id: pid });
-        console.log("Resultado:", result); // <- esto te dice si lo borró
-    }
+    const result = await productModel.deleteOne({ _id: pid });
+    console.log("Resultado:", result); // <- esto te dice si lo borró
+}
 }
 
 export default ProductDao;

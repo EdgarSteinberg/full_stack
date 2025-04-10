@@ -78,6 +78,23 @@ class ProductManager {
         }
     }
 
+    async decrementStock(productId, quantity) {
+        if (typeof quantity !== 'number' || quantity <= 0) {
+            throw new Error(`La cantidad debe ser un número positivo. Recibido: ${quantity}`);
+        }
+
+        const product = await this.getProductById(productId);
+        if (!product) {
+            throw new Error(`El producto con ID: ${productId} no se encuentra`);
+        }
+
+        try {
+            const result = await productDao.decrementStockDao(productId, quantity);
+            return result;
+        } catch (error) {
+            throw new Error("Error al actualizar stock")
+        }
+    }
 
     async deleteProduct(pid) {
         try {
