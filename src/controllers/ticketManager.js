@@ -33,6 +33,7 @@ class TicketManager {
         }
 
         const cartData = await cartManager.getCartById(cart);
+        console.log("Carrito recibido en backend:", JSON.stringify(cartData, null, 2));
         if (!cartData || cartData.products.length === 0) {
             throw new Error(`Error: Carrito con ID ${cart} no encontrado o vacío.`);
         }

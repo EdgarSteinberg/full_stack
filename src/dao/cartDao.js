@@ -28,7 +28,7 @@ class CartDao {
             // Si el producto no existe, agrégalo con cantidad 1
             return await cartModel.findOneAndUpdate(
                 { _id: cid },
-                { $push: { products: { product: pid, quantity: 1 } } },
+                { $push: { products: { product: pid, quantity } } },
                 { new: true, upsert: true }
             );
         }
