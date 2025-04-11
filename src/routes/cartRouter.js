@@ -40,7 +40,7 @@ router.post("/", async (req, res) => {
 
 router.post("/:cid/products/:pid", async (req, res) => {
     const { cid, pid } = req.params;
-    const { quantity = 1 } = req.body; // si no mandan nada, agrega 1 por defecto
+    const { quantity  } = req.body; // si no mandan nada, agrega 1 por defecto
 
     try {
         const result = await cartServices.addProductToCart(cid, pid, quantity);

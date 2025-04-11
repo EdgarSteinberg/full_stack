@@ -18,7 +18,7 @@ class CartManager {
         }
     }
 
-    async addProductToCart(cid, pid, quantity = 1) {
+    async addProductToCart(cid, pid, quantity) {
         try {
             return await cartDao.addProductToCartDao(cid, pid, quantity);
         } catch (error) {

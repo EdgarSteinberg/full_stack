@@ -13,7 +13,7 @@ class CartDao {
         return await cartModel.create({});
     }
 
-    async addProductToCartDao(cid, pid, quantity = 1) {
+    async addProductToCartDao(cid, pid, quantity) {
         // Busca si el producto ya está en el carrito
         const cart = await cartModel.findOne({ _id: cid, "products.product": pid });
 
